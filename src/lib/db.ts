@@ -1,5 +1,6 @@
 import "server-only";
 
+import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma/client";
 
@@ -14,7 +15,15 @@ function createPrismaClient() {
     throw new Error("DATABASE_URL belum dikonfigurasi.");
   }
 
-  const adapter = new PrismaPg({ connectionString });
+  // Gunakan Pool dari pg secara eksplisit untuk membatasi jumlah koneksi di serverless function (Vercel)
+  const pool = new Pool({
+    connectionString,
+    max: 2, // Batasi maksimal 2 koneksi per serverless instance agar tidak menembus batas pool Supabase
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
+
+  const adapter = new PrismaPg(pool);
 
   return new PrismaClient({ adapter });
 }
