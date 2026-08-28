@@ -1479,6 +1479,9 @@ async function main() {
         sales: seedSaleNumbers.length,
         sessions: seedSessionNumbers.length,
       };
+    }, {
+      maxWait: 120000,
+      timeout: 120000,
     });
 
     console.info("Seed database berhasil:");

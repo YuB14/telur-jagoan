@@ -602,6 +602,7 @@ model CashMovement {
   otherIncome   OtherIncome?
 
   @@index([cashSessionId])
+  @@index([createdBy])
   @@index([referenceType, referenceId])
   @@map("cash_movements")
 }
